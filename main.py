@@ -1,5 +1,8 @@
 import telebot
 import sqlite3
+import os
+import threading
+from flask import Flask
 from telebot import types
 from datetime import datetime, timedelta
 
@@ -1071,6 +1074,20 @@ def confirm_delete_master(call):
         call.message.message_id
     )
 
-init_db()   
-print('Бот запущен...')
-bot.infinity_polling()
+app = Flask('')
+
+@app.route('/')
+def home():
+    return "Бот работает!"
+
+def run_web_server():
+    port = int(os.environ.get("PORT", 8080))
+    app.run(host='0.0.0.0', port=port)
+
+
+if __name__ == "__main__":
+    threading.Thread(target=run_web_server).start()
+
+    init_db()
+    print("Бот успешно запущен!")
+    bot.infinity_polling() 
